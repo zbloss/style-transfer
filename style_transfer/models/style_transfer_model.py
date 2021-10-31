@@ -15,21 +15,21 @@ class StyleTransferModel(pl.LightningModule):
         style_image: torch.Tensor,
         normalization_mean: torch.tensor,
         normalization_std: torch.tensor,
-        content_layers: list = ['conv_4'],
-        style_layers: list = ['conv_1', 'conv_2', 'conv_3', 'conv_4', 'conv_5'],
+        content_layers: list = ["conv_4"],
+        style_layers: list = ["conv_1", "conv_2", "conv_3", "conv_4", "conv_5"],
         learning_rate: float = 0.003,
         style_weight: int = 1000000,
         content_weight: int = 1,
-        device: str = None
+        device: str = None,
     ):
         """
-        
+
         Args:
             user_image (torch.Tensor): The image you want to apply stylings to.
-            style_image (torch.Tensor): The iamge you want to extract styleings 
+            style_image (torch.Tensor): The iamge you want to extract styleings
                                             from.
             normalization_mean (torch.Tensor): Mean Values to normalize on.
-            normalization_std (torch.Tensor): Standard Deviation Values to 
+            normalization_std (torch.Tensor): Standard Deviation Values to
                                                 normalize on.
             content_layers (list): Names of layers you want to extract content
                                         from.
@@ -43,7 +43,7 @@ class StyleTransferModel(pl.LightningModule):
 
         Returns:
             None
-        
+
         """
         super().__init__()
 
@@ -55,10 +55,12 @@ class StyleTransferModel(pl.LightningModule):
         self.style_weight = style_weight
         self.content_weight = content_weight
         self.learning_rate = learning_rate
-        
+
         if device is None:
             device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.normalization = Normalization(normalization_mean, normalization_std) #.to(self.device)
+        self.normalization = Normalization(
+            normalization_mean, normalization_std
+        )  # .to(self.device)
 
     def _build_model_and_loss_functions(self, base_cnn_model: nn.Sequential):
         """
@@ -67,7 +69,7 @@ class StyleTransferModel(pl.LightningModule):
         functions.
 
         Args:
-            base_cnn_model (nn.Sequential): A CNN that you want to extract layers 
+            base_cnn_model (nn.Sequential): A CNN that you want to extract layers
                                                 from to build your model from.
         Returns:
             model (nn.Sequential): Model object ready for training. Stored as [`self.model`]
@@ -84,7 +86,7 @@ class StyleTransferModel(pl.LightningModule):
         # to put in modules that are supposed to be activated sequentially
         model = nn.Sequential(self.normalization)
 
-        i = 0 
+        i = 0
         for layer in base_cnn_model.children():
             if isinstance(layer, nn.Conv2d):
                 i += 1
@@ -135,7 +137,6 @@ class StyleTransferModel(pl.LightningModule):
 
         return (self.model, self.content_layers, self.style_losses)
 
-            
     def forward(self, x):
         original_input = x
         x = self.model(x)
@@ -160,15 +161,13 @@ class StyleTransferModel(pl.LightningModule):
 
         loss = style_score + content_score
 
-        self.log('style_loss', style_score)
-        self.log('content_loss', content_score)
-        self.log('loss', loss)
+        self.log("style_loss", style_score)
+        self.log("content_loss", content_score)
+        self.log("loss", loss)
 
         if self.global_step % 100 == 0:
             self.logger.experiment.add_image(
-                'logged_image',
-                y_hat.squeeze(0),
-                self.global_step
+                "logged_image", y_hat.squeeze(0), self.global_step
             )
 
         return loss

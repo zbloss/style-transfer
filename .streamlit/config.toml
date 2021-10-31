@@ -1,0 +1,48 @@
+[global]
+disableWatchdogWarning = false
+showWarningOnDirectExecution = true
+dataFrameSerialization = "arrow"
+
+[logger]
+level = "debug"
+messageFormat = "%(asctime)s %(levelname) -7s %(name)s: %(message)s"
+
+[client]
+caching = true
+displayEnabled = true
+showErrorDetails = true
+
+[runner]
+magicEnabled = true
+installTracer = false
+fixMatplotlib = true
+postScriptGC = true
+
+[server]
+folderWatchBlacklist = []
+fileWatcherType = "auto"
+cookieSecret = "zk6BqjGnDjk_hzn29WRdFfWM7zUNoqHgQ8Y4EZ0eFhtqoafOMgAvA12LqxjVWGHtZmECy_sHm_tQQmlIELjC0w"
+headless = false
+runOnSave = false
+port = 8501
+baseUrlPath = ""
+enableCORS = true
+enableXsrfProtection = true
+maxUploadSize = 50
+enableWebsocketCompression = true
+
+[browser]
+serverAddress = "0.0.0.0"
+gatherUsageStats = true
+serverPort = 8501
+
+[mapbox]
+token = ""
+
+[s3]
+keyPrefix = ""
+region = "us-east-2"
+
+[theme]
+base = "dark"
+font = "sans serif"

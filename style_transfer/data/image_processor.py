@@ -119,9 +119,11 @@ class ImageProcessor:
                 plt.title(title)
             plt.imshow(image)
 
-        file_directory, _ = os.path.split(filepath)
-        if not os.path.exists(file_directory):
-            os.makedirs(file_directory)
-
+        try:
+            file_directory, _ = os.path.split(filepath)
+            if not os.path.exists(file_directory):
+                os.makedirs(file_directory)
+        except:
+            pass
         image.save(filepath)
         return image
